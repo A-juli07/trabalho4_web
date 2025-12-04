@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu Perfil - <%= nome %></title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="profile-header">
+      <h1> Meu Perfil</h1>
+      <p>Bem-vindo(a) de volta, <strong><%= nome %></strong>!</p>
+    </div>
+
+    <div class="user-card">
+      <div class="user-card-header">
+        <div class="user-info">
+          <h3> Informações da Conta</h3>
+          <p>Sua sessão está ativa e protegida</p>
+        </div>
+        <span class="badge badge-success"> Autenticado</span>
+      </div>
+
+      <div style="margin-top: 20px; padding: 20px; background: #f9fafb; border-radius: 8px;">
+        <p style="margin-bottom: 8px;">
+          <strong> Nome:</strong> <%= nome %>
+        </p>
+        <p style="margin-bottom: 8px;">
+          <strong> Sessão:</strong> Ativa e criptografada
+        </p>
+        <p style="margin-bottom: 0;">
+          <strong> Proteções ativas:</strong> CSRF Token, HTTP-Only Cookies, SameSite
+        </p>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <a href="/users" class="btn btn-primary">
+        Ver Todos os Usuários
+      </a>
+
+      <form action="/logout" method="POST" style="margin: 0;">
+        <% if (typeof csrfToken !== 'undefined' && csrfToken) { %>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <% } %>
+        <button type="submit" class="btn btn-danger">
+          Sair do Sistema
+        </button>
+      </form>
+    </div>
+
+    <div class="footer">
+      <p>
+        <strong>Aluna:</strong> Ana Julia Vieira Pereira Andrade da Costa<br>
+        <strong>Disciplina:</strong> DCC 704 – Arquitetura e Tecnologias de Sistemas WEB
+      </p>
+    </div>
+  </div>
+</body>
+</html>

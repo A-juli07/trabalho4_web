@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de Usuários - Sistema</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+    <div class="container container-large">
+        <div class="header">
+            <h1>Gerenciamento de Usuários</h1>
+            <p>Sistema completo de CRUD com proteção CSRF</p>
+        </div>
+
+        <div class="toolbar">
+            <h2>Lista de Usuários (<%= usuarios.length %>)</h2>
+            <div style="display: flex; gap: 12px;">
+                <a href="/perfil" class="btn btn-secondary">
+                    Meu Perfil
+                </a>
+                <a href="/users/new" class="btn btn-success">
+                     Novo Usuário
+                </a>
+            </div>
+        </div>
+
+        <% if (usuarios.length === 0) { %>
+            <div class="empty-state">
+                <h3> Nenhum usuário cadastrado</h3>
+                <p>Comece adicionando seu primeiro usuário ao sistema.</p>
+                <a href="/users/new" class="btn btn-primary" style="margin-top: 20px;">
+                    Adicionar Primeiro Usuário
+                </a>
+            </div>
+        <% } else { %>
+            <div>
+                <% usuarios.forEach(function(user) { %>
+                    <div class="user-card">
+                        <div class="user-card-header">
+                            <div class="user-info">
+                                <h3><%= user.nome %></h3>
+                                <p> <%= user.cargo || 'Cargo não informado' %></p>
+                                <% if (user.email) { %>
+                                    <p style="font-size: 0.875rem; color: #6b7280;">
+                                         <%= user.email %>
+                                    </p>
+                                <% } %>
+                            </div>
+                            <div class="user-actions">
+                                <a href="/users/<%= user._id %>/edit" class="btn btn-warning btn-sm">
+                                     Editar
+                                </a>
+                                <form action="/users/<%= user._id %>/delete" method="POST" style="display: inline;">
+                                    <% if (typeof csrfToken !== 'undefined' && csrfToken) { %>
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                                    <% } %>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Tem certeza que deseja excluir <%= user.nome %>?')"
+                                    >
+                                        Excluir
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <div class="footer">
+            <p>
+                <strong> Defesas Ativas:</strong> XSS Prevention (EJS Escape) ·
+                CSRF Protection · Rate Limiting · SQL Injection Prevention (Mongoose)
+            </p>
+            <p style="margin-top: 8px;">
+                <strong>Aluna:</strong> Ana Julia Vieira Pereira Andrade da Costa
+            </p>
+        </div>
+    </div>
+</body>
+</html>

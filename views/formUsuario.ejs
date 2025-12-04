@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Criar Nova Conta - Sistema</title>
+	<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+	<div class="container">
+		<div class="header">
+			<h1>Criar Nova Conta</h1>
+			<p>Preencha os dados abaixo para se cadastrar</p>
+		</div>
+
+		<% if (typeof query !== 'undefined' && query.erro) { %>
+			<div class="alert alert-error">
+				<% if (query.erro === 'falta_email_ou_senha') { %>
+					Preencha todos os campos obrigatórios: nome, email e senha.
+				<% } else if (query.erro === 'email_ja_cadastrado') { %>
+					Este email já está cadastrado. Tente fazer login ou use outro email.
+				<% } else { %>
+					<%= query.erro %>
+				<% } %>
+			</div>
+		<% } %>
+
+		<form action="/users" method="POST">
+			<% if (typeof csrfToken !== 'undefined' && csrfToken) { %>
+				<input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+			<% } %>
+
+			<div class="form-group">
+				<label for="nome">Nome Completo</label>
+				<input
+					type="text"
+					id="nome"
+					name="nome_usuario"
+					class="form-control"
+					placeholder="Digite seu nome completo"
+					required
+					autofocus
+				/>
+			</div>
+
+			<div class="form-group">
+				<label for="cargo">Cargo/Função</label>
+				<input
+					type="text"
+					id="cargo"
+					name="cargo_usuario"
+					class="form-control"
+					placeholder="Ex: Desenvolvedor, Analista, Gerente..."
+					required
+				/>
+			</div>
+
+			<div class="form-group">
+				<label for="email">Email</label>
+				<input
+					type="email"
+					id="email"
+					name="email_usuario"
+					class="form-control"
+					placeholder="seu@email.com"
+					required
+				/>
+				<small style="color: #6b7280; font-size: 0.875rem;">
+					Você usará este email para fazer login no sistema
+				</small>
+			</div>
+
+			<div class="form-group">
+				<label for="senha">Senha</label>
+				<input
+					type="password"
+					id="senha"
+					name="senha_usuario"
+					class="form-control"
+					placeholder="Crie uma senha forte"
+					required
+					minlength="6"
+				/>
+				<small style="color: #6b7280; font-size: 0.875rem;">
+					Mínimo de 6 caracteres. Será armazenada com hash bcrypt.
+				</small>
+			</div>
+
+			<button type="submit" class="btn btn-success btn-block">
+				Criar Conta
+			</button>
+		</form>
+
+		<div class="footer">
+			<p>Já tem uma conta? <a href="/login" class="link">Fazer login</a></p>
+			<p style="margin-top: 12px;">
+				<a href="/users" class="link">← Voltar para lista de usuários</a>
+			</p>
+			<p style="margin-top: 12px; font-size: 0.8rem;">
+				<strong>Segurança:</strong> Sua senha será protegida com bcrypt (hash irreversível)
+			</p>
+		</div>
+	</div>
+</body>
+</html>

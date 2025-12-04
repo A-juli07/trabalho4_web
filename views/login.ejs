@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Login</h1>
+      <p>Acesse sua conta no sistema</p>
+    </div>
+
+    <% if (typeof query !== 'undefined' && query.erro) { %>
+      <div class="alert alert-error">
+        <% if (query.erro === 'usuario') { %>
+           Usuário não encontrado. Verifique o email digitado.
+        <% } else if (query.erro === 'senha') { %>
+          Senha incorreta. Tente novamente.
+        <% } else { %>
+         <%= query.erro %>
+        <% } %>
+      </div>
+    <% } %>
+
+    <form action="/login" method="POST">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="form-control"
+          placeholder="seu@email.com"
+          required
+          autofocus
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <input
+          type="password"
+          id="senha"
+          name="senha"
+          class="form-control"
+          placeholder="Digite sua senha"
+          required
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">
+        Entrar no Sistema
+      </button>
+    </form>
+
+    <div class="footer">
+      <p>Não tem uma conta? <a href="/users/new" class="link">Criar conta gratuita</a></p>
+      <p style="margin-top: 10px; font-size: 0.8rem;">
+        <strong>Sistema Protegido:</strong> Rate Limiting · CSRF · Helmet · bcrypt
+      </p>
+    </div>
+  </div>
+</body>
+</html>
