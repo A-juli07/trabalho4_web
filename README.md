@@ -120,7 +120,12 @@ NODE_ENV=development
 
 ## Como Executar
 
-1. Inicie o MongoDB:
+0. Testando:
+```bash
+npm test
+```
+
+2. Inicie o MongoDB:
 ```bash
 net start MongoDB
 ```
