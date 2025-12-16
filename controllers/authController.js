@@ -5,28 +5,46 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 
+// Funções utilitárias para lógica pura (facilita testes)
+const normalizeEmail = (email) => {
+  if (!email) return '';
+  return email.toLowerCase().trim();
+};
+
+const createUserSession = (session, user) => {
+  session.userId = user._id;
+  session.userName = user.nome;
+  session.nome = user.nome;
+};
+
+const logSuccessfulLogin = (user, ip) => {
+  const timestamp = new Date().toISOString();
+  console.log(`[${timestamp}] Login bem-sucedido: email=${user.email} id=${user._id} ip=${ip}`);
+};
+
 // Login: recebe email e senha, autentica e cria sessão
 exports.login = async (req, res) => {
   try {
-    let { email, senha } = req.body;
-    // Normaliza email antes da busca
-    if (email) email = email.toLowerCase().trim();
+    const { email: rawEmail, senha } = req.body;
+    const email = normalizeEmail(rawEmail);
+
     // 1. Buscar usuário pelo email
     const user = await User.findOne({ email });
-    if (!user) return res.redirect('/login?erro=usuario');
+    if (!user) {
+      return res.redirect('/login?erro=usuario');
+    }
 
     // 2. Comparar senha com o Hash
     const isMatch = await bcrypt.compare(senha, user.password || '');
-    if (!isMatch) return res.redirect('/login?erro=senha');
+    if (!isMatch) {
+      return res.redirect('/login?erro=senha');
+    }
 
     // 3. Criar a Sessão
-    req.session.userId = user._id;
-    req.session.userName = user.nome;
-    // Mantém compatibilidade com outros pontos do app
-    req.session.nome = user.nome;
+    createUserSession(req.session, user);
 
     // Log no terminal para auditoria/desenvolvimento
-    console.log(`[${new Date().toISOString()}] Login bem-sucedido: email=${user.email} id=${user._id} ip=${req.ip}`);
+    logSuccessfulLogin(user, req.ip);
 
     return res.redirect('/users');
   } catch (err) {
@@ -37,7 +55,7 @@ exports.login = async (req, res) => {
 
 // Logout: destrói a sessão e redireciona para /login
 exports.logout = (req, res) => {
-  req.session.destroy(err => {
+  req.session.destroy((err) => {
     if (err) {
       console.error('Erro ao destruir sessão:', err);
       return res.redirect('/perfil');
@@ -47,3 +65,7 @@ exports.logout = (req, res) => {
     return res.redirect('/login');
   });
 };
+
+// Exporta funções utilitárias para testes
+module.exports.normalizeEmail = normalizeEmail;
+module.exports.createUserSession = createUserSession;

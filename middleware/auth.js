@@ -1,13 +1,16 @@
 // middleware/auth.js
 // Um "segurança" que verifica se o "crachá" (sessão) existe
-function isAuth(req, res, next) {
-  if (req.session && req.session.userId) {
+
+const isAuth = (req, res, next) => {
+  const hasValidSession = req.session?.userId;
+
+  if (hasValidSession) {
     // Tem crachá válido. Pode passar (next)
     return next();
-  } else {
-    // Não tem crachá. Volta pro Login
-    return res.redirect('/login');
   }
-}
+
+  // Não tem crachá. Volta pro Login
+  return res.redirect('/login');
+};
 
 module.exports = isAuth;
